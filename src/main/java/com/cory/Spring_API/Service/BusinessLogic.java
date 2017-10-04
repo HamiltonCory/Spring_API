@@ -24,8 +24,8 @@ public class BusinessLogic {
         return list;
     }
 
-    public Account retrieveAccount(int account_id) {
-        Account account = accountRepo.findByAccount_Id(account_id);
+    public Account retrieveAccount(int accountId) {
+        Account account = accountRepo.findByAccountId(accountId);
         return account;
     }
 
@@ -34,8 +34,8 @@ public class BusinessLogic {
         return list;
     }
 
-    public List<Transaction> retrieveTransactions(int account_id) {
-        List<Transaction> list = transactionRepo.findByAccount_Id(account_id);
+    public List<Transaction> retrieveTransactions(int accountId) {
+        List<Transaction> list = transactionRepo.findByAccountId(accountId);
         return list;
     }
 }

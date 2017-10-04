@@ -9,21 +9,22 @@ import java.util.List;
 public class Account {
 
     @Id
-    @SequenceGenerator(name = "accountSequence", sequenceName = "account_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "accountSequence", sequenceName = "accountId_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "accountSequence")
-    @Column(name = "account_id")
-    private int account_id;
+
+    @JoinColumn(name="accountId")
+    private int accountId;
 
     @Column(name = "principal")
     private double principal;
 
-    @OneToMany(mappedBy = "account_id" , fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "accountId" , fetch = FetchType.EAGER)
     private List<Transaction> transactions;
 
     public Account() {}
 
-    public int getAccount_id() {
-        return account_id;
+    public int getaccountId() {
+        return accountId;
     }
 
     public double getPrincipal() {
@@ -41,7 +42,7 @@ public class Account {
 
         Account account = (Account) o;
 
-        if (getAccount_id() != account.getAccount_id()) return false;
+        if (getaccountId() != account.getaccountId()) return false;
         if (Double.compare(account.getPrincipal(), getPrincipal()) != 0) return false;
         return getTransactions() != null ? getTransactions().equals(account.getTransactions()) : account.getTransactions() == null;
     }
@@ -50,7 +51,7 @@ public class Account {
     public int hashCode() {
         int result;
         long temp;
-        result = getAccount_id();
+        result = getaccountId();
         temp = Double.doubleToLongBits(getPrincipal());
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (getTransactions() != null ? getTransactions().hashCode() : 0);
@@ -60,7 +61,7 @@ public class Account {
     @Override
     public String toString() {
         return "Account{" +
-                "account_id=" + account_id +
+                "accountId=" + accountId +
                 ", principal=" + principal +
                 ", transactions=" + transactions +
                 '}';

@@ -13,8 +13,8 @@ public class Transaction {
     @Column(name = "transaction_id")
     private int transaction_id;
 
-    @Column(name = "account_id")
-    private int account_id;
+    @Column(name = "accountId")
+    private int accountId;
 
     @Column(name = "transaction_type")
     private String transaction_type;
@@ -39,17 +39,20 @@ public class Transaction {
         Transaction that = (Transaction) o;
 
         if (transaction_id != that.transaction_id) return false;
-        if (!transaction_type.equals(that.transaction_type)) return false;
-        if (!timestamp.equals(that.timestamp)) return false;
-        return amount.equals(that.amount);
+        if (accountId != that.accountId) return false;
+        if (transaction_type != null ? !transaction_type.equals(that.transaction_type) : that.transaction_type != null)
+            return false;
+        if (timestamp != null ? !timestamp.equals(that.timestamp) : that.timestamp != null) return false;
+        return amount != null ? amount.equals(that.amount) : that.amount == null;
     }
 
     @Override
     public int hashCode() {
         int result = transaction_id;
-        result = 31 * result + transaction_type.hashCode();
-        result = 31 * result + timestamp.hashCode();
-        result = 31 * result + amount.hashCode();
+        result = 31 * result + accountId;
+        result = 31 * result + (transaction_type != null ? transaction_type.hashCode() : 0);
+        result = 31 * result + (timestamp != null ? timestamp.hashCode() : 0);
+        result = 31 * result + (amount != null ? amount.hashCode() : 0);
         return result;
     }
 
@@ -57,6 +60,7 @@ public class Transaction {
     public String toString() {
         return "Transaction{" +
                 "transaction_id=" + transaction_id +
+                ", accountId=" + accountId +
                 ", transaction_type='" + transaction_type + '\'' +
                 ", timestamp=" + timestamp +
                 ", amount=" + amount +
