@@ -14,24 +14,33 @@ public class AccountsController {
     @Autowired
     private BusinessLogic businessLogic;
 
-    @RequestMapping( method = RequestMethod.POST, consumes =  MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity postApplication(){
-        System.out.println("Creating account");
-        Account account = new Account();
-
+    @RequestMapping( method = RequestMethod.POST)
+    public ResponseEntity postAccount(){
+        Account account = businessLogic.postAccount(new Account());
         if (account != null) {
-            return ResponseEntity.ok().body(account);
+            return ResponseEntity.ok().body("New account created with ID: " + account.getAccountId());
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @RequestMapping(value="/{id}", method = RequestMethod.GET)
-    public ResponseEntity getApplication(@PathVariable("id") int id) {
+    public ResponseEntity getAccount(@PathVariable("id") int id) {
+        Account account = businessLogic.retrieveAccount(id);
+        if(account != null) {
+            return ResponseEntity.ok().body(account);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @RequestMapping(value="/{id}/ledger", method = RequestMethod.GET)
+    public ResponseEntity getAccountLedger(@PathVariable("id") int id) {
         Account account = businessLogic.retrieveAccount(id);
 
         if(account != null) {
-            return ResponseEntity.ok().body(account);
+            String ledger = account.viewLedger();
+            return ResponseEntity.ok().body(ledger);
         } else {
             return ResponseEntity.badRequest().build();
         }

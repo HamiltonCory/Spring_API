@@ -2,22 +2,24 @@ package com.cory.Spring_API.Models;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.util.Calendar;
 
 @Entity
 @Table(name = "transactions")
 public class Transaction {
 
     @Id
-    @SequenceGenerator(name = "transactionSequence", sequenceName = "transaction_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "transactionSequence", sequenceName = "transactionId_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transactionSequence")
-    @Column(name = "transaction_id")
-    private int transaction_id;
+    @Column(name = "transactionId")
+    private int transactionId;
 
     @Column(name = "accountId")
     private int accountId;
 
-    @Column(name = "transaction_type")
-    private String transaction_type;
+    @Column(name = "transactionType")
+    private String transactionType;
 
     @Column(name = "timestamp")
     private Timestamp timestamp;
@@ -25,10 +27,66 @@ public class Transaction {
     @Column(name = "amount")
     private Double amount;
 
-    public Transaction(Transaction newTransaction) {
-        this.transaction_type = newTransaction.transaction_type;
-        this.timestamp = newTransaction.timestamp;
-        this.amount = newTransaction.amount;
+    public Transaction() {
+        this.timestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
+    }
+
+    public Transaction(Transaction transaction) {
+        this.accountId = transaction.accountId;
+        setTransactionType(transaction.getTransactionType());
+        this.timestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
+        this.amount = transaction.amount;
+    }
+
+    public Transaction(int accountId, String transactionType, Double amount) {
+        this.accountId = accountId;
+        setTransactionType(transactionType);
+        this.timestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
+        this.amount = amount;
+    }
+
+    public int getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(int transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
+    }
+
+    public String getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(String transactionType) {
+        String type= transactionType.trim().toUpperCase();
+        if (type.equals("CREDIT") || type.equals("DEBIT")){
+            this.transactionType = type;
+        }
+        else this.transactionType = "UNKNOWN";
+    }
+
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 
     @Override
@@ -38,9 +96,9 @@ public class Transaction {
 
         Transaction that = (Transaction) o;
 
-        if (transaction_id != that.transaction_id) return false;
+        if (transactionId != that.transactionId) return false;
         if (accountId != that.accountId) return false;
-        if (transaction_type != null ? !transaction_type.equals(that.transaction_type) : that.transaction_type != null)
+        if (transactionType != null ? !transactionType.equals(that.transactionType) : that.transactionType != null)
             return false;
         if (timestamp != null ? !timestamp.equals(that.timestamp) : that.timestamp != null) return false;
         return amount != null ? amount.equals(that.amount) : that.amount == null;
@@ -48,9 +106,9 @@ public class Transaction {
 
     @Override
     public int hashCode() {
-        int result = transaction_id;
+        int result = transactionId;
         result = 31 * result + accountId;
-        result = 31 * result + (transaction_type != null ? transaction_type.hashCode() : 0);
+        result = 31 * result + (transactionType != null ? transactionType.hashCode() : 0);
         result = 31 * result + (timestamp != null ? timestamp.hashCode() : 0);
         result = 31 * result + (amount != null ? amount.hashCode() : 0);
         return result;
@@ -58,12 +116,13 @@ public class Transaction {
 
     @Override
     public String toString() {
+        DecimalFormat f = new DecimalFormat("##.00");
         return "Transaction{" +
-                "transaction_id=" + transaction_id +
+                "transactionId=" + transactionId +
                 ", accountId=" + accountId +
-                ", transaction_type='" + transaction_type + '\'' +
+                ", transactionType='" + transactionType + '\'' +
                 ", timestamp=" + timestamp +
-                ", amount=" + amount +
+                ", amount=" + f.format(amount) +
                 '}';
     }
 }
