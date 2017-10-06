@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.beans.factory.annotation.Autowired;
 import javax.persistence.*;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,11 +25,13 @@ public class Account {
     private List<Transaction> transactions;
 
     @Transient
-    @JsonInclude
-    private Ledger ledger;
+    List<Double> debits;
+    @Transient
+    List<Double> credits;
 
     public Account() {
-        this.ledger = new Ledger(transactions);
+        this.debits = new ArrayList<Double>();
+        this.credits = new ArrayList<Double>();
     }
 
     public int getAccountId() {
@@ -53,14 +56,6 @@ public class Account {
 
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
-    }
-
-    public Ledger getLedger() {
-        return ledger;
-    }
-
-    public void setLedger(Ledger ledger) {
-        this.ledger = new Ledger(transactions);
     }
 
     @Override
@@ -96,23 +91,71 @@ public class Account {
                 '}';
     }
 
-    public String viewLedger(){
-        return ledger.toString();
-    }
-
-    public void updateLedger() {
+    public void update() {
         Double sum=0.00;
         for (Transaction t:transactions){
             String type= t.getTransactionType().toUpperCase();
             if(type.equals("DEBIT")){
-                sum+=t.getAmount();
+                sum-=t.getAmount();
             }
             else if (type.equals("CREDIT")){
-                sum-=t.getAmount();
+                sum+=t.getAmount();
             }
         }
         this.principal=sum;
+    }
 
-        ledger.updateLedger(transactions);
+
+    public void updateLedger() {
+//        List<Double> debits = new ArrayList<Double>();
+//        List<Double> credits = new ArrayList<Double>();
+        if (transactions != null && transactions.size() > 0) {
+            int length = transactions.size();
+            debits = new ArrayList<Double>();
+            credits = new ArrayList<Double>();
+
+            for (int x = 0; x < length; x++) {
+                Transaction t = transactions.get(x);
+                String transactionType = t.getTransactionType();
+                Double amount = t.getAmount();
+                if (transactionType.toUpperCase().equals("DEBIT")) {
+                    //debits.add(x, amount);
+                    debits.add(x, amount);
+                    credits.add(x, 0.00);
+                } else if (transactionType.toUpperCase().equals("CREDIT")) {
+                    //credits.add(x, amount);
+                    debits.add(x, 0.00);
+                    credits.add(x, amount);
+                } else {
+                    System.out.print("This transaction was not a debit or a credit. Please review transaction: " + t.getTransactionId());
+                }
+            }
+        } else {
+            System.out.println("No transactions found!");
+        }
+        System.out.println(debits + "\n" + credits);
+    }
+
+    public String viewLedger() {
+//        List<Double> debits = new ArrayList<Double>();
+//        List<Double> credits = new ArrayList<Double>();
+
+        updateLedger();
+
+        String indent = "        ";
+
+        String debitOutput = "cash-out:\ndebit   | credit\n--------+--------\n";
+        for (int x = 0; x < debits.size(); x++) {
+            Double charge = debits.get(x);
+            debitOutput += charge + indent.substring(0, indent.length() - Double.toString(charge).length()) + "|\n";
+        }
+        String creditOutput = "principal:\ndebit   | credit\n--------+--------\n";
+        for (int x = 0; x < credits.size(); x++) {
+            Double charge = credits.get(x);
+            creditOutput += "        | " + charge + "\n";
+        }
+        String output=debitOutput + "\n" + creditOutput;
+        System.out.println(output);
+        return output;
     }
 }

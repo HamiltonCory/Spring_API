@@ -20,7 +20,7 @@ public class TransactionsController {
     public ResponseEntity postApplication(@RequestBody Transaction newTransaction){
         Account account = businessLogic.retrieveAccount(newTransaction.getAccountId());
         Transaction transaction = businessLogic.postTransaction(newTransaction);
-        businessLogic.updateLedger(account);
+        businessLogic.update(account);
 
         if (transaction != null) {
             return ResponseEntity.ok().body(transaction);

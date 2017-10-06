@@ -1,7 +1,6 @@
 package com.cory.Spring_API.Service;
 
 import com.cory.Spring_API.Models.Account;
-import com.cory.Spring_API.Models.Ledger;
 import com.cory.Spring_API.Models.Transaction;
 import com.cory.Spring_API.Repositories.AccountRepo;
 import com.cory.Spring_API.Repositories.TransactionRepo;
@@ -55,7 +54,7 @@ public class BusinessLogic {
         return savedTransaction;
     }
 
-    public void updateLedger(Account account) {
-        account.updateLedger();
+    public void update(Account account) {
+        account.update();
     }
 }
