@@ -3,6 +3,7 @@ package com.cory.Spring_API.Models;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 @Entity
@@ -22,26 +23,26 @@ public class Transaction {
     private String transactionType;
 
     @Column(name = "timestamp")
-    private Timestamp timestamp;
+    private String timestamp;
 
     @Column(name = "amount")
     private Double amount;
 
     public Transaction() {
-        this.timestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
+        setTimestamp();
     }
 
     public Transaction(Transaction transaction) {
         this.accountId = transaction.accountId;
         setTransactionType(transaction.getTransactionType());
-        this.timestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
+        setTimestamp();
         this.amount = transaction.amount;
     }
 
     public Transaction(int accountId, String transactionType, Double amount) {
         this.accountId = accountId;
         setTransactionType(transactionType);
-        this.timestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
+        setTimestamp();
         this.amount = amount;
     }
 
@@ -73,12 +74,17 @@ public class Transaction {
         else this.transactionType = "UNKNOWN";
     }
 
-    public Timestamp getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
+    public void setTimestamp() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        this.timestamp = sdf.format(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
+    }
     public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        this.timestamp = sdf.format(timestamp);
     }
 
     public Double getAmount() {
@@ -117,6 +123,7 @@ public class Transaction {
     @Override
     public String toString() {
         DecimalFormat f = new DecimalFormat("##.00");
+       // SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
         return "Transaction{" +
                 "transactionId=" + transactionId +
                 ", accountId=" + accountId +

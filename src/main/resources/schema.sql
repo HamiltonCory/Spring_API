@@ -10,6 +10,6 @@ CREATE TABLE transactions (
   transactionId   INT PRIMARY KEY,
   accountId       INT,
   transactionType VARCHAR(8),
-  timestamp DATETIME,
+  timestamp VARCHAR(20),
   amount           DOUBLE
 );
